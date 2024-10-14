@@ -3,10 +3,7 @@
 
 #include "Items/MyActor.h"
 #include "DrawDebugHelpers.h"
-
-// Define the sphere's parameters as a macro
-#define DRAW_SPHERE_PARAMS(World, Location) \
-    DrawDebugSphere(World, Location, 25.0f, 24, FColor::Red, false, 30.0f)
+#include "ThirdPerson/ThirdPerson.h"
 
 // Sets default values
 AMyActor::AMyActor()
@@ -20,17 +17,24 @@ void AMyActor::BeginPlay()
 {
     Super::BeginPlay();
     
+    // Log in console
     UE_LOG(LogTemp, Warning, TEXT("AMyActor::BeginPlay"));
-
+    
+    // Log on game screen
     if (GEngine) {
         GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, TEXT("On Screen Debug"));
     }
-
+    
+    // Define the world
     UWorld* World = GetWorld();
 
     if (World) {
+        // Draw sphere around the actor
         FVector Location = GetActorLocation();
-        DRAW_SPHERE_PARAMS(World, Location);  // Use the macro here
+        DRAW_SPHERE_PARAMS(World, Location);
+        
+        // Draw vector pointing from the front of the actor
+        DrawDebugLine(World, Location, Location + (GetActorForwardVector() * 100.f), FColor::Red, true);
     }
 }
 
@@ -39,8 +43,10 @@ void AMyActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     
+    // Log the delta time to the console
     UE_LOG(LogTemp, Warning, TEXT("Delta Time: %f"), DeltaTime);
 
+    // Log the delta time to the screen for 5 seconds
     if (GEngine) {
         FString message = FString::Printf(TEXT("AMyActor::Tick: %f"), DeltaTime);
         GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, message);
