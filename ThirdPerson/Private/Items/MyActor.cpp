@@ -3,7 +3,7 @@
 
 #include "Items/MyActor.h"
 #include "DrawDebugHelpers.h"
-#include "ThirdPerson/ThirdPerson.h"
+#include "ThirdPerson/DebugMacros.h"
 
 // Sets default values
 AMyActor::AMyActor()
@@ -28,14 +28,11 @@ void AMyActor::BeginPlay()
     // Define the world
     UWorld* World = GetWorld();
 
-    if (World) {
-        // Draw sphere around the actor
-        FVector Location = GetActorLocation();
-        DRAW_SPHERE_PARAMS(World, Location);
-        
-        // Draw vector pointing from the front of the actor
-        DrawDebugLine(World, Location, Location + (GetActorForwardVector() * 100.f), FColor::Red, true);
-    }
+	FVector Location = GetActorLocation();
+    FVector Forward = GetActorForwardVector();
+
+	DRAW_SPHERE(Location);
+	DRAW_VECTOR(Location, Location + Forward * 100.f);
 }
 
 // Called every frame
