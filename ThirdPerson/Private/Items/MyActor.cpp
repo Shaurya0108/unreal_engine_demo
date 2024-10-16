@@ -9,6 +9,10 @@
 AMyActor::AMyActor() {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
+
+	// Store the location to the pointer
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent")); // This function returns a pointer to the object
+	RootComponent = ItemMesh; // Garbage collected to root pointer, root points to ItemMesh now
 }
 
 // Called when the game starts or when spawned
