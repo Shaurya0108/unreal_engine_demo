@@ -4,10 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "InputActionValue.h"
 
-// Inlcude before Bird.generated
-#include "Components/CapsuleComponent.h"
 #include "Bird.generated.h"
+
+class UCapsuleComponent; // forward declare class at the start
+class USkeletalMeshComponent;
+class UInputMappingContext;
+class UInputAction;
 
 UCLASS()
 class THIRDPERSON_API ABird : public APawn
@@ -23,7 +27,20 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	void MoveForward(float Value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputMappingContext* BirdMapContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputAction* MoveAction;
+
+	void Move(const FInputActionValue& Value);
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* Capsule;
+
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* BirdMesh;
 };
