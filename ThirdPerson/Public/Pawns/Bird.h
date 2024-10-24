@@ -27,7 +27,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	void MoveForward(float Value);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	UInputMappingContext* BirdMapContext;

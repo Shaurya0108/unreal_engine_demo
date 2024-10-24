@@ -4,6 +4,7 @@
 #include "Pawns/Bird.h"
 #include "Components/CapsuleComponent.h" // include the component here to save space on the .h file
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/InputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
@@ -38,23 +39,20 @@ void ABird::BeginPlay()
 	}
 }
 
-void ABird::MoveForward(float Value) {
-	UE_LOG(LogTemp, Display, TEXT("MoveForward"));
-}
-
 void ABird::Move(const FInputActionValue& Value) {
-	const bool moveVal = Value.Get<bool>();
-	if (moveVal) {
-		UE_LOG(LogTemp, Display, TEXT("MoveForward"));
+	const float DirectionVal = Value.Get<float>();
+
+	if (Controller && (DirectionVal != 0.f))
+	{
+		FVector Forward = GetActorForwardVector();
+		AddMovementInput(Forward, DirectionVal);
 	}
-	
 }
 
 // Called every frame
 void ABird::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -65,7 +63,5 @@ void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABird::Move);
 	}
-
-	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &ABird::MoveForward);
 }
 
