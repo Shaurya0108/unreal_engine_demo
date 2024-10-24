@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h" // include the component here to save space on the .h file
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 
 // Sets default values
 ABird::ABird()
@@ -42,7 +43,11 @@ void ABird::MoveForward(float Value) {
 }
 
 void ABird::Move(const FInputActionValue& Value) {
-
+	const bool moveVal = Value.Get<bool>();
+	if (moveVal) {
+		UE_LOG(LogTemp, Display, TEXT("MoveForward"));
+	}
+	
 }
 
 // Called every frame
@@ -56,6 +61,10 @@ void ABird::Tick(float DeltaTime)
 void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABird::Move);
+	}
 
 	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &ABird::MoveForward);
 }
