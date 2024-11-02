@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -18,6 +19,9 @@ AMainCharacter::AMainCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	SpringArm->SetupAttachment(GetRootComponent());
@@ -45,20 +49,20 @@ void AMainCharacter::Move(const FInputActionValue& MovementAction)
 {
 	const FVector2D MovementVector = MovementAction.Get<FVector2D>();
 
-	const FVector Forward = GetActorForwardVector();
-	AddMovementInput(Forward, MovementVector.Y);
-
-	const FVector Right = GetActorRightVector();
-	AddMovementInput(Right, MovementVector.X);
-
-	// // later down the line use this:
-	// const FRotator Rotation = Controller->GetControlRotation();
-	// const FRotator YawRotation = FRotator(0.0f, Rotation.Yaw, 0.0f);
+	// const FVector Forward = GetActorForwardVector();
+	// AddMovementInput(Forward, MovementVector.Y);
 	//
-	// const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	// AddMovementInput(ForwardDirection, MovementVector.Y);
-	// const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-	// AddMovementInput(RightDirection, MovementVector.X);
+	// const FVector Right = GetActorRightVector();
+	// AddMovementInput(Right, MovementVector.X);
+
+	// later down the line use this, it uses the mouse to control the movement direction:
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation = FRotator(0.0f, Rotation.Yaw, 0.0f);
+	
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	AddMovementInput(ForwardDirection, MovementVector.Y);
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	AddMovementInput(RightDirection, MovementVector.X);
 }
 
 void AMainCharacter::Look(const FInputActionValue& LookAction)
