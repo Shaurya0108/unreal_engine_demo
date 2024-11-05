@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "MyActor.generated.h"
 
+class USphereComponent;
+
 UCLASS()
 class THIRDPERSON_API AMyActor : public AActor {
 	GENERATED_BODY()
@@ -31,12 +33,19 @@ protected:
 	template<typename T>
 	T Avg(T First, T Second);
 
+	UFUNCTION()
+    void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime;
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ItemMesh; // Empty pointer
+
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere;
 };
 
 template<typename T>
