@@ -72,6 +72,11 @@ void AMainCharacter::Look(const FInputActionValue& LookAction)
 	AddControllerYawInput(LookAxisVector.X);
 }
 
+void AMainCharacter::Dodge()
+{
+	printf("Dodge!");
+}
+
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
@@ -94,6 +99,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainCharacter::Jump);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AMainCharacter::Dodge);
 	}
 }
 

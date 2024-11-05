@@ -39,8 +39,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category=Input)
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, Category=Input)
+	UInputAction* DodgeAction;
+
 	void Move(const FInputActionValue& MovementAction);
 	void Look(const FInputActionValue& MovementAction);
+
+	/** Call backs for input **/
+	void Dodge();
 private:
 
 	UPROPERTY(VisibleAnywhere)
