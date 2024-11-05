@@ -13,5 +13,16 @@ UCLASS()
 class THIRDPERSON_API UMainAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
+public:
+	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUpdateAnimation(float DeltaTime) override;
 	
+	UPROPERTY(BlueprintReadOnly) // available to event graph
+	class AMainCharacter* MainCharacter;
+	
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	class UCharacterMovementComponent* MainCharacterMovement;
+	
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	float GroundSpeed;
 };

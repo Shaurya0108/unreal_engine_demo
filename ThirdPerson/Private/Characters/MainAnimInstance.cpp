@@ -2,4 +2,26 @@
 
 
 #include "Characters/MainAnimInstance.h"
+#include "Characters/MainCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
+void UMainAnimInstance::NativeInitializeAnimation()
+{
+	Super::NativeInitializeAnimation();
+	MainCharacter = Cast<AMainCharacter>(TryGetPawnOwner()); // try to cast pawn to character class
+	
+	if (MainCharacter)
+	{
+		MainCharacterMovement = MainCharacter->GetCharacterMovement();
+	}
+}
+void UMainAnimInstance::NativeUpdateAnimation(float DeltaTime)
+{
+	Super::NativeUpdateAnimation(DeltaTime);
+	
+	if (MainCharacterMovement)
+	{
+		GroundSpeed = UKismetMathLibrary::VSizeXY(MainCharacterMovement->Velocity);
+	}
+}
