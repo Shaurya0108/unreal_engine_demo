@@ -23,5 +23,6 @@ void UMainAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	if (MainCharacterMovement)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(MainCharacterMovement->Velocity); // kismit is a math library
+		IsFalling = MainCharacterMovement->IsFalling();
 	}
 }
