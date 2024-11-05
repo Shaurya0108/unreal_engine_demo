@@ -20,8 +20,8 @@ class THIRDPERSON_API AMainCharacter : public ACharacter
 
 public:
 	AMainCharacter();
-	
 	virtual void Tick(float DeltaTime) override;
+	virtual void Jump() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
@@ -35,6 +35,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category=Input)
 	UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere, Category=Input)
+	UInputAction* JumpAction;
 
 	void Move(const FInputActionValue& MovementAction);
 	void Look(const FInputActionValue& MovementAction);
