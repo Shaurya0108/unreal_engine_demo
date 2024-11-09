@@ -3,6 +3,7 @@
 
 #include "Characters/MainAnimInstance.h"
 #include "Characters/MainCharacter.h"
+#include "DynamicMesh/DynamicMesh3.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -24,5 +25,10 @@ void UMainAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(MainCharacterMovement->Velocity); // kismit is a math library
 		IsFalling = MainCharacterMovement->IsFalling();
+	}
+
+	if (IsHoldingWeapon)
+	{
+		printf("hold");
 	}
 }

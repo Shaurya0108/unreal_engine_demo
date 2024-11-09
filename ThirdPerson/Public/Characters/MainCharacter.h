@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Items/MyActor.h"
 
 #include "MainCharacter.generated.h"
 
@@ -12,6 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
+class AMyActor;
 
 UCLASS()
 class THIRDPERSON_API AMainCharacter : public ACharacter
@@ -42,16 +44,26 @@ protected:
 	UPROPERTY(EditAnywhere, Category=Input)
 	UInputAction* DodgeAction;
 
+	UPROPERTY(EditAnywhere, Category=Input)
+	UInputAction* EKeyAction;
+	
 	void Move(const FInputActionValue& MovementAction);
 	void Look(const FInputActionValue& MovementAction);
 
 	/** Call backs for input **/
 	void Dodge();
+	void EKeyPressed();
+	
 private:
-
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* ViewCamera;
+
+	UPROPERTY(VisibleInstanceOnly)
+	AMyActor* OverlappingItem;
+
+public:
+	FORCEINLINE void SetOverlappingItem(AMyActor* Item) { OverlappingItem = Item; }
 };

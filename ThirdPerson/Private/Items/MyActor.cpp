@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "ThirdPerson/DebugMacros.h"
 #include "Components/SphereComponent.h"
+#include "Characters/MainCharacter.h"
 
 // Sets default values
 AMyActor::AMyActor() {
@@ -37,20 +38,24 @@ float AMyActor::TransformedCos() {
 
 void AMyActor::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
+	// const FString OtherActorName = OtherActor->GetName();
+	AMainCharacter* MyCharacter = Cast<AMainCharacter>(OtherActor);
+	if (MyCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+		//GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+		MyCharacter->SetOverlappingItem(this);
 	}
 }
 
 void AMyActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	const FString OtherActorName = FString("Ending Overlap with: ") + OtherActor->GetName();
-	if (GEngine)
+//	const FString OtherActorName = FString("Ending Overlap with: ") + OtherActor->GetName();
+	AMainCharacter* MyCharacter = Cast<AMainCharacter>(OtherActor);
+	if (MyCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Blue, OtherActorName);
+		// GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Blue, OtherActorName);
+		MyCharacter->SetOverlappingItem(nullptr);
 	}
 }
 
@@ -59,12 +64,4 @@ void AMyActor::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	RunningTime += DeltaTime;
-
-	// DRAW_SPHERE_SingleFrame(GetActorLocation());
-	// DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
-	//
-	// // Template function
-	// FVector AvgVector = Avg<FVector>(GetActorLocation(), FVector::ZeroVector);
-	//
-	// DRAW_POINT_SingleFrame(AvgVector);
 }
