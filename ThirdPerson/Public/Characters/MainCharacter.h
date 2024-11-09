@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "Items/MyActor.h"
+#include "CharacterTypes.h"
 
 #include "MainCharacter.generated.h"
 
@@ -55,6 +56,8 @@ protected:
 	void EKeyPressed();
 	
 private:
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+	
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
@@ -66,4 +69,5 @@ private:
 
 public:
 	FORCEINLINE void SetOverlappingItem(AMyActor* Item) { OverlappingItem = Item; }
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 };

@@ -84,6 +84,7 @@ void AMainCharacter::EKeyPressed()
 	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("hand_rSocket"));
+		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
 	}
 }
 

@@ -25,6 +25,7 @@ void UMainAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(MainCharacterMovement->Velocity); // kismit is a math library
 		IsFalling = MainCharacterMovement->IsFalling();
+		CharacterState = MainCharacter->GetCharacterState();
 	}
 
 	if (IsHoldingWeapon)
