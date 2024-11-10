@@ -32,6 +32,9 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	bool IsHoldingWeapon;
+	
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
+    bool IsWearingMask;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement | Character State")
 	ECharacterState CharacterState;

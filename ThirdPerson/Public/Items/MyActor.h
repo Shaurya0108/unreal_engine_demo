@@ -41,13 +41,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ItemMesh; // Empty pointer
+	
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime;
-
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* Sphere;
 };
 
 template<typename T>

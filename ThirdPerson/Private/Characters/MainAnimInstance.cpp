@@ -32,4 +32,9 @@ void UMainAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	{
 		printf("hold");
 	}
+
+	if (IsWearingMask)
+	{
+		printf("wearing mask");
+	}
 }

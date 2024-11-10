@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Items/MyActor.h"
 #include "Items/Weapons/Weapon.h"
+#include "Items/Mask/Mask.h"
 
 
 // Sets default values
@@ -79,12 +80,22 @@ void AMainCharacter::Dodge()
 	printf("Dodge!");
 }
 
+// Equip weapon
 void AMainCharacter::EKeyPressed()
 {
 	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
 	{
-		OverlappingWeapon->Equip(GetMesh(), FName("hand_rSocket"));
+		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	}
+}
+
+// Equip mask
+void AMainCharacter::FKeyPressed()
+{
+	if (AMask* OverlappingMask = Cast<AMask>(OverlappingItem))
+	{
+		OverlappingMask->Equip(GetMesh(), FName("HeadSocket"));
 	}
 }
 
@@ -112,6 +123,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainCharacter::Jump);
 		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AMainCharacter::Dodge);
 		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &AMainCharacter::EKeyPressed);
+		EnhancedInputComponent->BindAction(FKeyAction, ETriggerEvent::Triggered, this, &AMainCharacter::FKeyPressed);
 	}
 }
-

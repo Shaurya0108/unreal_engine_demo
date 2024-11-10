@@ -47,6 +47,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category=Input)
 	UInputAction* EKeyAction;
+
+	UPROPERTY(EditAnywhere, Category=Input)
+	UInputAction* FKeyAction;
 	
 	void Move(const FInputActionValue& MovementAction);
 	void Look(const FInputActionValue& MovementAction);
@@ -54,6 +57,7 @@ protected:
 	/** Call backs for input **/
 	void Dodge();
 	void EKeyPressed();
+	void FKeyPressed();
 	
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
