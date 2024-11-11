@@ -46,18 +46,11 @@ void AMainCharacter::BeginPlay()
 			Subsystem->AddMappingContext(MainContext, 0); // Add main char map as context and 0 as priority
 		}
 	}
-	
 }
 
 void AMainCharacter::Move(const FInputActionValue& MovementAction)
 {
 	const FVector2D MovementVector = MovementAction.Get<FVector2D>();
-
-	// const FVector Forward = GetActorForwardVector();
-	// AddMovementInput(Forward, MovementVector.Y);
-	//
-	// const FVector Right = GetActorRightVector();
-	// AddMovementInput(Right, MovementVector.X);
 
 	// later down the line use this, it uses the mouse to control the movement direction:
 	const FRotator Rotation = Controller->GetControlRotation();
@@ -74,11 +67,6 @@ void AMainCharacter::Look(const FInputActionValue& LookAction)
 	const FVector2D LookAxisVector = LookAction.Get<FVector2D>();
 	AddControllerPitchInput(LookAxisVector.Y);
 	AddControllerYawInput(LookAxisVector.X);
-}
-
-void AMainCharacter::Dodge()
-{
-	printf("Dodge!");
 }
 
 // Equip weapon
@@ -107,13 +95,44 @@ void AMainCharacter::Jump()
 
 void AMainCharacter::Attack()
 {
+	if (CanAttack())
+	{
+		PlayAttackMontage();
+		ActionState = EActionState::EAS_Attacking;
+	}
+}
+
+bool AMainCharacter::CanAttack()
+{
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+void AMainCharacter::PlayAttackMontage()
+{
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && AttackMontage)
 	{
 		AnimInstance->Montage_Play(AttackMontage);
-		int32 Selection = FMath::RandRange(0, 1);
+		const int32 Selection = FMath::RandRange(0, 2);
 		FName SectionName = FName();
-		switch (Selection)
+		// switch (Selection)
+		// {
+		// case 0:
+		// 	SectionName = FName("Attack1");
+		// 	break;
+		// case 1:
+		// 	SectionName = FName("Attack2");
+		// 	break;
+		// case 2:
+		// 	SectionName = FName("Attack3");
+		// 	break;
+		// default:
+		// 	break;
+		// }
+		
+		// Use CurrentAttackIndex instead of random selection
+		switch (CurrentAttackIndex)
 		{
 		case 0:
 			SectionName = FName("Attack1");
@@ -121,18 +140,29 @@ void AMainCharacter::Attack()
 		case 1:
 			SectionName = FName("Attack2");
 			break;
+		case 2:
+			SectionName = FName("Attack3");
+			break;
 		default:
 			break;
 		}
+
+		// Increment attack index and wrap around to 0 after last attack
+		CurrentAttackIndex = (CurrentAttackIndex + 1) % 3;
+		
 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 	}
+}
+
+void AMainCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -145,7 +175,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainCharacter::Jump);
-		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AMainCharacter::Dodge);
 		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &AMainCharacter::EKeyPressed);
 		EnhancedInputComponent->BindAction(FKeyAction, ETriggerEvent::Triggered, this, &AMainCharacter::FKeyPressed);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);

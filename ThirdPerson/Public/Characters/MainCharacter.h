@@ -44,9 +44,6 @@ protected:
 	UInputAction* JumpAction;
 
 	UPROPERTY(EditAnywhere, Category=Input)
-	UInputAction* DodgeAction;
-
-	UPROPERTY(EditAnywhere, Category=Input)
 	UInputAction* EKeyAction;
 
 	UPROPERTY(EditAnywhere, Category=Input)
@@ -59,13 +56,26 @@ protected:
 	void Look(const FInputActionValue& MovementAction);
 
 	/** Call backs for input **/
-	void Dodge();
 	void EKeyPressed();
 	void FKeyPressed();
 	void Attack();
+
+	/** 
+	* Play montage functions
+	*/
+	void PlayAttackMontage();
+	
+	UFUNCTION(BlueprintCallable)
+    void AttackEnd();
+    bool CanAttack();
 	
 private:
+	int32 CurrentAttackIndex = 0;
+	
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 	
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
