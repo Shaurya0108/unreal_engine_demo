@@ -22,6 +22,7 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	// 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	// 	ItemMesh->AttachToComponent(MainCharacter->GetMesh(), TransformRules, FName("hand_rSocket"));
 	// }
+	ItemState = EItemState::EIS_Equipped;
 }
 
 void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

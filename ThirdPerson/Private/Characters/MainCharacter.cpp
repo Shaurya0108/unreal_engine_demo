@@ -50,6 +50,7 @@ void AMainCharacter::BeginPlay()
 
 void AMainCharacter::Move(const FInputActionValue& MovementAction)
 {
+	if (ActionState == EActionState::EAS_Attacking) return;
 	const FVector2D MovementVector = MovementAction.Get<FVector2D>();
 
 	// later down the line use this, it uses the mouse to control the movement direction:
@@ -104,9 +105,55 @@ void AMainCharacter::Attack()
 
 bool AMainCharacter::CanAttack()
 {
-	return ActionState == EActionState::EAS_Unoccupied &&
-		CharacterState != ECharacterState::ECS_Unequipped;
+	return (ActionState == EActionState::EAS_Unoccupied) &&
+		   (CharacterState != ECharacterState::ECS_Unequipped);
 }
+
+// void AMainCharacter::PlayAttackMontage()
+// {
+// 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+// 	if (AnimInstance && AttackMontage)
+// 	{
+// 		AnimInstance->Montage_Play(AttackMontage);
+// 		const int32 Selection = FMath::RandRange(0, 2);
+// 		FName SectionName = FName();
+// 		// switch (Selection)
+// 		// {
+// 		// case 0:
+// 		// 	SectionName = FName("Attack1");
+// 		// 	break;
+// 		// case 1:
+// 		// 	SectionName = FName("Attack2");
+// 		// 	break;
+// 		// case 2:
+// 		// 	SectionName = FName("Attack3");
+// 		// 	break;
+// 		// default:
+// 		// 	break;
+// 		// }
+// 		
+// 		// Use CurrentAttackIndex instead of random selection
+// 		switch (CurrentAttackIndex)
+// 		{
+// 		case 0:
+// 			SectionName = FName("Attack1");
+// 			break;
+// 		case 1:
+// 			SectionName = FName("Attack2");
+// 			break;
+// 		case 2:
+// 			SectionName = FName("Attack3");
+// 			break;
+// 		default:
+// 			break;
+// 		}
+//
+// 		// Increment attack index and wrap around to 0 after last attack
+// 		CurrentAttackIndex = (CurrentAttackIndex + 1) % 3;
+// 		
+// 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+// 	}
+// }
 
 void AMainCharacter::PlayAttackMontage()
 {
@@ -114,24 +161,11 @@ void AMainCharacter::PlayAttackMontage()
 	if (AnimInstance && AttackMontage)
 	{
 		AnimInstance->Montage_Play(AttackMontage);
-		const int32 Selection = FMath::RandRange(0, 2);
 		FName SectionName = FName();
-		// switch (Selection)
-		// {
-		// case 0:
-		// 	SectionName = FName("Attack1");
-		// 	break;
-		// case 1:
-		// 	SectionName = FName("Attack2");
-		// 	break;
-		// case 2:
-		// 	SectionName = FName("Attack3");
-		// 	break;
-		// default:
-		// 	break;
-		// }
-		
-		// Use CurrentAttackIndex instead of random selection
+        
+		// Add debug print
+		UE_LOG(LogTemp, Warning, TEXT("Playing Attack %d"), CurrentAttackIndex + 1);
+        
 		switch (CurrentAttackIndex)
 		{
 		case 0:
@@ -149,7 +183,7 @@ void AMainCharacter::PlayAttackMontage()
 
 		// Increment attack index and wrap around to 0 after last attack
 		CurrentAttackIndex = (CurrentAttackIndex + 1) % 3;
-		
+        
 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 	}
 }

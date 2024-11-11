@@ -8,6 +8,12 @@
 
 class USphereComponent;
 
+enum class EItemState : uint8
+{
+	EIS_Hovering,
+	EIS_Equipped
+};
+
 UCLASS()
 class THIRDPERSON_API AMyActor : public AActor {
 	GENERATED_BODY()
@@ -44,6 +50,8 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
+
+	EItemState ItemState = EItemState::EIS_Hovering;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
