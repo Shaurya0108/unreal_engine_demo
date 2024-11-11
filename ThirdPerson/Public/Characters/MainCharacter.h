@@ -15,6 +15,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class AMyActor;
+class UAnimMontage;
 
 UCLASS()
 class THIRDPERSON_API AMainCharacter : public ACharacter
@@ -50,6 +51,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category=Input)
 	UInputAction* FKeyAction;
+
+	UPROPERTY(EditAnywhere, Category=Input)
+	UInputAction* AttackAction;
 	
 	void Move(const FInputActionValue& MovementAction);
 	void Look(const FInputActionValue& MovementAction);
@@ -58,6 +62,7 @@ protected:
 	void Dodge();
 	void EKeyPressed();
 	void FKeyPressed();
+	void Attack();
 	
 private:
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
@@ -70,6 +75,12 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	AMyActor* OverlappingItem;
+
+	/** 
+	* Animation montages
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AMyActor* Item) { OverlappingItem = Item; }
