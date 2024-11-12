@@ -16,6 +16,7 @@ class UInputMappingContext;
 class UInputAction;
 class AMyActor;
 class UAnimMontage;
+class AWeapon;
 
 UCLASS()
 class THIRDPERSON_API AMainCharacter : public ACharacter
@@ -68,6 +69,19 @@ protected:
 	UFUNCTION(BlueprintCallable)
     void AttackEnd();
     bool CanAttack();
+
+	void PlayEquipMontage(FName SectionName);
+	bool CanDisArm();
+	bool CanArm();
+
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
+	
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+	
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
 	
 private:
 	int32 CurrentAttackIndex = 0;
@@ -86,11 +100,17 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AMyActor* OverlappingItem;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AWeapon* EquippedWeapon;
+
 	/** 
 	* Animation montages
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AMyActor* Item) { OverlappingItem = Item; }

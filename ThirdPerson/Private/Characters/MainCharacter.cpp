@@ -50,7 +50,7 @@ void AMainCharacter::BeginPlay()
 
 void AMainCharacter::Move(const FInputActionValue& MovementAction)
 {
-	if (ActionState == EActionState::EAS_Attacking) return;
+	if (ActionState != EActionState::EAS_Unoccupied) return;
 	const FVector2D MovementVector = MovementAction.Get<FVector2D>();
 
 	// later down the line use this, it uses the mouse to control the movement direction:
@@ -70,28 +70,77 @@ void AMainCharacter::Look(const FInputActionValue& LookAction)
 	AddControllerYawInput(LookAxisVector.X);
 }
 
-// Equip weapon
+// Equip and unequip weapon
 void AMainCharacter::EKeyPressed()
 {
-	if (AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
+	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
+	if (OverlappingWeapon)
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		OverlappingItem = nullptr;
+		EquippedWeapon = OverlappingWeapon;
 	}
-}
-
-// Equip mask
-void AMainCharacter::FKeyPressed()
-{
-	if (AMask* OverlappingMask = Cast<AMask>(OverlappingItem))
+	else
 	{
-		OverlappingMask->Equip(GetMesh(), FName("HeadSocket"));
+		if (CanDisArm())
+		{
+			PlayEquipMontage(FName("Unequip"));
+			CharacterState = ECharacterState::ECS_Unequipped;
+			ActionState = EActionState::EAS_EquippingWeapon;
+		}
+		else if (CanArm())
+		{
+			PlayEquipMontage(FName("Equip"));
+			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+			ActionState = EActionState::EAS_EquippingWeapon;
+		}
 	}
 }
 
-void AMainCharacter::Jump()
+bool AMainCharacter::CanDisArm()
 {
-	Super::Jump();
+	return ActionState == EActionState::EAS_Unoccupied && 
+		CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+bool AMainCharacter::CanArm()
+{
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState == ECharacterState::ECS_Unequipped && 
+		EquippedWeapon;
+}
+
+void AMainCharacter::Disarm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("LeftShoulderSocket"));
+	}
+}
+void AMainCharacter::Arm()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+	}
+}
+
+void AMainCharacter::FinishEquipping()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Finished equip montage"));
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+void AMainCharacter::PlayEquipMontage(FName SectionName)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Playing equip montage"));
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && EquipMontage)
+	{
+		AnimInstance->Montage_Play(EquipMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+	}
 }
 
 void AMainCharacter::Attack()
@@ -105,55 +154,9 @@ void AMainCharacter::Attack()
 
 bool AMainCharacter::CanAttack()
 {
-	return (ActionState == EActionState::EAS_Unoccupied) &&
-		   (CharacterState != ECharacterState::ECS_Unequipped);
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState != ECharacterState::ECS_Unequipped;
 }
-
-// void AMainCharacter::PlayAttackMontage()
-// {
-// 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-// 	if (AnimInstance && AttackMontage)
-// 	{
-// 		AnimInstance->Montage_Play(AttackMontage);
-// 		const int32 Selection = FMath::RandRange(0, 2);
-// 		FName SectionName = FName();
-// 		// switch (Selection)
-// 		// {
-// 		// case 0:
-// 		// 	SectionName = FName("Attack1");
-// 		// 	break;
-// 		// case 1:
-// 		// 	SectionName = FName("Attack2");
-// 		// 	break;
-// 		// case 2:
-// 		// 	SectionName = FName("Attack3");
-// 		// 	break;
-// 		// default:
-// 		// 	break;
-// 		// }
-// 		
-// 		// Use CurrentAttackIndex instead of random selection
-// 		switch (CurrentAttackIndex)
-// 		{
-// 		case 0:
-// 			SectionName = FName("Attack1");
-// 			break;
-// 		case 1:
-// 			SectionName = FName("Attack2");
-// 			break;
-// 		case 2:
-// 			SectionName = FName("Attack3");
-// 			break;
-// 		default:
-// 			break;
-// 		}
-//
-// 		// Increment attack index and wrap around to 0 after last attack
-// 		CurrentAttackIndex = (CurrentAttackIndex + 1) % 3;
-// 		
-// 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
-// 	}
-// }
 
 void AMainCharacter::PlayAttackMontage()
 {
@@ -163,7 +166,6 @@ void AMainCharacter::PlayAttackMontage()
 		AnimInstance->Montage_Play(AttackMontage);
 		FName SectionName = FName();
         
-		// Add debug print
 		UE_LOG(LogTemp, Warning, TEXT("Playing Attack %d"), CurrentAttackIndex + 1);
         
 		switch (CurrentAttackIndex)
@@ -191,6 +193,20 @@ void AMainCharacter::PlayAttackMontage()
 void AMainCharacter::AttackEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
+}
+
+// Equip mask
+void AMainCharacter::FKeyPressed()
+{
+	if (AMask* OverlappingMask = Cast<AMask>(OverlappingItem))
+	{
+		OverlappingMask->Equip(GetMesh(), FName("HeadSocket"));
+	}
+}
+
+void AMainCharacter::Jump()
+{
+	Super::Jump();
 }
 
 // Called every frame
