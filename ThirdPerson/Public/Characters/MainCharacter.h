@@ -53,6 +53,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category=Input)
 	UInputAction* AttackAction;
 	
+	UPROPERTY(EditAnywhere, Category=Input)
+	UInputAction* SprintAction;
+	
 	void Move(const FInputActionValue& MovementAction);
 	void Look(const FInputActionValue& MovementAction);
 
@@ -60,6 +63,7 @@ protected:
 	void EKeyPressed();
 	void FKeyPressed();
 	void Attack();
+	void Sprint();
 
 	/** 
 	* Play montage functions
@@ -84,6 +88,14 @@ protected:
 	void FinishEquipping();
 	
 private:
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float WalkSpeed = 600.f;
+    
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float SprintSpeed = 1200.f;
+
+	bool bIsSprinting = false;
+	
 	int32 CurrentAttackIndex = 0;
 	
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;

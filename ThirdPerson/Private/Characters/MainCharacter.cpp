@@ -39,6 +39,7 @@ AMainCharacter::AMainCharacter()
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
 	// Input mapping context
 	if (APlayerController* PC = Cast<APlayerController>(GetController())) {
@@ -209,6 +210,25 @@ void AMainCharacter::Jump()
 	Super::Jump();
 }
 
+void AMainCharacter::Sprint()
+{
+	if (ActionState != EActionState::EAS_Unoccupied) return;
+    
+	if (!bIsSprinting)
+	{
+		// Start sprinting
+		bIsSprinting = true;
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	}
+	else
+	{
+		// Stop sprinting
+		bIsSprinting = false;
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+}
+
+
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
@@ -228,5 +248,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(EKeyAction, ETriggerEvent::Triggered, this, &AMainCharacter::EKeyPressed);
 		EnhancedInputComponent->BindAction(FKeyAction, ETriggerEvent::Triggered, this, &AMainCharacter::FKeyPressed);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
+
+		// Sprint start and end
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AMainCharacter::Sprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainCharacter::Sprint);
 	}
 }
