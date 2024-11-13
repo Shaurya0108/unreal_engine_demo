@@ -12,6 +12,7 @@
 #include "Items/Weapons/Weapon.h"
 #include "Items/Mask/Mask.h"
 #include "Animation/AnimMontage.h"
+#include "Components/BoxComponent.h"
 
 
 // Sets default values
@@ -252,5 +253,13 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		// Sprint start and end
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AMainCharacter::Sprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainCharacter::Sprint);
+	}
+}
+
+void AMainCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+{
+	if (EquippedWeapon && EquippedWeapon->GetWeaponBox())
+	{
+		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
 	}
 }
