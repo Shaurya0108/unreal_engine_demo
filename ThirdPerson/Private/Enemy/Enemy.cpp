@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "ThirdPerson/DebugMacros.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -97,9 +98,18 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
-	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange)
+	// DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange)
 	
 	DirectionalHitReact(ImpactPoint);
+
+	if (HitParticles && GetWorld())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			ImpactPoint
+		);
+	}
 }
 
 // Called to bind functionality to input
