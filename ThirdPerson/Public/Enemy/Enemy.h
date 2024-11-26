@@ -25,6 +25,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetHit(const FVector& ImpactPoint) override;
+	
+	void DirectionalHitReact(const FVector& ImpactPoint);
+	
 private:
 	/**
 	* Animation montages
@@ -39,4 +42,5 @@ protected:
 	* Play montage functions
 	*/
 	void PlayHitReactMontage(const FName& SectionName);
+	// void DirectionalHitReact(const FVector& ImpactPoint);
 };

@@ -45,10 +45,8 @@ void AEnemy::PlayHitReactMontage(const FName& SectionName)
 	}
 }
 
-void AEnemy::GetHit(const FVector& ImpactPoint)
+void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 {
-	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange)
-	
 	const FVector Forward = GetActorForwardVector();
 	
 	// Lower Impact Point to the Enemy's Actor Location Z
@@ -95,6 +93,13 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	}
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+}
+
+void AEnemy::GetHit(const FVector& ImpactPoint)
+{
+	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange)
+	
+	DirectionalHitReact(ImpactPoint);
 }
 
 // Called to bind functionality to input
