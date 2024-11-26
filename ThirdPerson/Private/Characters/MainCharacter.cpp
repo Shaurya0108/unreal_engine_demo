@@ -134,7 +134,7 @@ void AMainCharacter::FinishEquipping()
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
-void AMainCharacter::PlayEquipMontage(FName SectionName)
+void AMainCharacter::PlayEquipMontage(const FName& SectionName)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Playing equip montage"));
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
